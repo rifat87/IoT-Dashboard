@@ -1,4 +1,4 @@
-import SensorData from "../models/SensorData.js";
+import SensorData from "../models/SensorData";
 
 const addSensorData = async (req, res) => {
   const { sensorName, data, timestamp } = req.body;
