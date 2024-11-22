@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 import "../styles/Register.css"; // Add your CSS styles here.
 
 const Register = () => {
@@ -11,6 +12,7 @@ const Register = () => {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const navigate = useNavigate(); // Initialize useNavigate
 
   // Handle input changes
   const handleChange = (e) => {
@@ -22,12 +24,16 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/register", formData);
+      const response = await axios.post(
+        "http://localhost:5000/register", // Update the API URL to match your backend route
+        formData
+      );
 
       if (response.data.message === "User registered successfully") {
-        setSuccess("Registration successful! You can now log in.");
+        setSuccess("Registration successful! Redirecting to login...");
         setError("");
         setFormData({ username: "", email: "", password: "" }); // Reset form
+        setTimeout(() => navigate("/login"), 2000); // Redirect to login page after 2 seconds
       }
     } catch (err) {
       console.error(err);
