@@ -29,7 +29,7 @@ const Register = () => {
         formData
       );
 
-      if (response.data.message === "User registered successfully") {
+      if (response.status === 201) {
         setSuccess("Registration successful! Redirecting to login...");
         setError("");
         setFormData({ username: "", email: "", password: "" }); // Reset form

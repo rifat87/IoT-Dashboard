@@ -1,38 +1,53 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import authService from '../services/authService';
-import '../styles/Forms.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Ensure axios is installed
+import "../styles/Forms.css";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await authService.login({ email, password });
-      alert('Login successful');
-      navigate('/');
+      // Make API call to /login
+      const response = await axios.post("http://localhost:5000/login", {
+        email,
+        password,
+      });
+
+      // Check if login was successful
+      if (response.status === 200) {
+        alert("Login successful");
+        navigate("/dashboard"); // Redirect to Dashboard
+      }
     } catch (error) {
-      alert('Login failed');
+      // Show error message for login failure
+      setErrorMessage(
+        error.response?.data?.message || "Invalid email or password"
+      );
     }
   };
 
   return (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleLogin} className="form-container">
       <h2>Login</h2>
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
       <input
         type="email"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        required
       />
       <input
         type="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        required
       />
       <button type="submit">Login</button>
     </form>

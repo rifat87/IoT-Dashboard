@@ -1,6 +1,7 @@
 import { Router } from "express";
 import controller from "../controllers/authController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+import { getSensorData } from "../controllers/sensorController.js";
 
 const { requireAuth, checkUser } = authMiddleware;
 
@@ -10,6 +11,7 @@ const router = Router();
 router.post("/register", controller.registerUser); // User registration
 router.post("/login", controller.loginUser); // User login
 router.get("/logout", controller.logoutUser); // User logout
+router.get("/data", getSensorData);
 
 // Example protected routes
 router.get("/profile", requireAuth, (req, res) => {

@@ -1,4 +1,4 @@
-import { User } from "../models/User.js";
+import { Users } from "../models/User.js";
 import generateToken from "../utils/token.js";
 
 // Controller functions
@@ -7,23 +7,23 @@ const registerUser = async (req, res) => {
   console.log("Registering user:", req.body); // Log incoming data
 
   try {
-    const userExists = await User.findOne({ email });
+    const userExists = await Users.findOne({ email });
     console.log("The email is uinque");
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
     console.log("The email");
-    const user = new User({ name, email, password });
+    const users = new Users({ name, email, password });
     // Save user to database
-    await user.save();
+    await users.save();
     console.log("The data is stored");
-    if (user) {
+    if (users) {
       console.log("Unable to create the user");
       res.status(201).json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user._id),
+        _id: users._id,
+        name: users.name,
+        email: users.email,
+        token: generateToken(users._id),
       });
     } else {
       res.status(400).json({ message: "Invalid user data" });
@@ -40,13 +40,13 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
-    if (user && (await user.matchPassword(password))) {
+    const users = await Users.findOne({ email });
+    if (users && (await users.matchPassword(password))) {
       res.status(200).json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user._id),
+        _id: users._id,
+        name: users.name,
+        email: users.email,
+        token: generateToken(users._id),
       });
     } else {
       res.status(401).json({ message: "Invalid email or password" });

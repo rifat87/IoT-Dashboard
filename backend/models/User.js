@@ -21,4 +21,4 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 // Named export of the model
-export const User = mongoose.model("User", userSchema);
+export const Users = mongoose.model("Users", userSchema);
