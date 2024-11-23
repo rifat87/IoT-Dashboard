@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 
 
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 //check for all request
 app.get('*', checkUser)
 

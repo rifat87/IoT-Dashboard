@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
+import { addSensorData } from '../controllers/sensorController.js';
+
 const router = express.Router();
 
-// Example route to get sensor data
-router.get('/', (req, res) => {
-  res.json({ message: 'Sensor data goes here' });
-});
+// Route to receive data from ESP32
+router.post('/write', addSensorData);
 
-module.exports = router;
+export default router;

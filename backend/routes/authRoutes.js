@@ -11,6 +11,7 @@ const router = Router();
 router.post("/register", controller.registerUser); // User registration
 router.post("/login", controller.loginUser); // User login
 router.get("/logout", controller.logoutUser); // User logout
+router.get('/profile', controller.getApiKey);
 router.get("/data", getSensorData);
 
 // Example protected routes

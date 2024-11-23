@@ -1,18 +1,14 @@
-import SensorData from "../models/SensorData";
+import SensorData from "../models/SensorData.js";
+
 
 const addSensorData = async (req, res) => {
-  const { sensorName, data, timestamp } = req.body;
+  const { email, sensorName, value } = req.body;
 
   try {
-    const sensorData = await SensorData.findOneAndUpdate(
-      { userId: req.user._id, sensorName },
-      {
-        $push: { data, timestamps: timestamp },
-      },
-      { upsert: true, new: true }
-    );
+    const newData = new SensorData({ email, sensorName, value });
+    await newData.save();
 
-    res.status(200).json(sensorData);
+    res.status(201).json({ message: 'Sensor data added successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

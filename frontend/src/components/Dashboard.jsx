@@ -1,8 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, Box, Container, Grid, Card, CardContent, Button } from '@mui/material';
+import axios from 'axios';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [writeApiKey, setWriteApiKey] = useState('');
+
+  const fetchApiKey = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/profile", {
+        withCredentials: true, // Ensure cookies are sent with the request
+      });
+
+      setWriteApiKey(response.data.writeApiKey);
+      console.log("API Key fetched successfully:", response.data.writeApiKey);
+    } catch (error) {
+      console.error('Error fetching API Key:', error.response?.data || error.message);
+    }
+  };
+
+  const handleShowApiKey = () => {
+    if (!showApiKey) {
+      fetchApiKey(); // Fetch the API key only if it isn't being displayed already
+    }
+    setShowApiKey(!showApiKey); // Toggle the visibility of the API key
+  };
+
   return (
     <Box>
       {/* Header */}
@@ -26,6 +50,7 @@ const Dashboard = () => {
             borderRight: '1px solid #ddd',
             padding: 2,
           }}
+          className="sidebar"
         >
           <Typography variant="h6" gutterBottom>
             Menu
@@ -39,23 +64,51 @@ const Dashboard = () => {
           <Button fullWidth sx={{ marginBottom: 2 }} variant="outlined">
             Settings
           </Button>
-          <Button fullWidth variant="outlined">
+          <Button fullWidth sx={{ marginBottom: 2 }} variant="outlined">
             Logs
+          </Button>
+          {/* Show API Key Button */}
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleShowApiKey}
+          >
+            {showApiKey ? 'Hide API Key' : 'Show API Key'}
           </Button>
         </Box>
 
         {/* Main Content */}
-        <Container sx={{ flexGrow: 1, padding: 4 }}>
+        <Container sx={{ flexGrow: 1, padding: 4 }} className="main-container">
           <Typography variant="h4" gutterBottom>
             Welcome to your IoT Dashboard
           </Typography>
+
+          {showApiKey && (
+            <Card sx={{ marginBottom: 4 }}>
+              <CardContent>
+                <Typography variant="h6">Your Write API Key</Typography>
+                <Typography variant="body1" sx={{ marginTop: 2, wordBreak: 'break-word' }}>
+                  {writeApiKey || 'Loading...'}
+                </Typography>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Placeholder for Sensor Chart */}
           <Box sx={{ marginBottom: 4 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6">Sensor Data (Live Chart)</Typography>
-                <Box sx={{ height: '300px', bgcolor: '#eaeaea', textAlign: 'center', lineHeight: '300px' }}>
+                <Box
+                  sx={{
+                    height: '300px',
+                    bgcolor: '#eaeaea',
+                    textAlign: 'center',
+                    lineHeight: '300px',
+                  }}
+                  className="chart-placeholder"
+                >
                   Chart Placeholder
                 </Box>
               </CardContent>

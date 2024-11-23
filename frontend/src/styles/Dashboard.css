@@ -121,3 +121,20 @@ body, html {
     border-top: 1px solid #e0e0e0;
   }
   
+
+  /* Additional styles for API Key section */
+  .card-content {
+    text-align: center;
+    word-wrap: break-word;
+  }
+  
+  .sidebar button.show-api-key-btn {
+    background-color: #1976d2;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sidebar button.show-api-key-btn:hover {
+    background-color: #145ca9;
+  }
+  

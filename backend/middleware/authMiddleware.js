@@ -1,28 +1,32 @@
 import jwt from "jsonwebtoken";
 import { Users } from "../models/User.js"; // Adjust the path as needed
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key"; // Use environment variable for secret
+ // Use environment variable for secret
 
 // Middleware to check if the user is authorized
-const requireAuth = (req, res, next) => {
-  const token = req.cookies?.jwt; // Retrieve token from cookies
 
-  if (!token) {
-    return res.status(401).json({ error: "Unauthorized" }); // Token not found
+const requireAuth = async (req, res, next) => {
+  const token = req.cookies.jwt
+  console.log("Hello")
+  // chec json wev token exitst & is verified
+  if(token){
+      // we are going to use jwt.verify method to check the token
+      jwt.verify(token, 'mynameisrifat', (err, decodedToken) => {
+          if(err) { // if there is any error found then redirect the user to login page
+              console.log(err.message)
+              res.status(401).json({ error: 'Unauthorized' });
+          }else{
+              console.log(decodedToken);
+              req.userId = decodedToken.id;
+              next()
+          }
+      } )
   }
-
-  // Verify token
-  jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
-    if (err) {
-      console.error("JWT Verification Error:", err.message);
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-
-    console.log("Decoded Token:", decodedToken);
-    req.userId = decodedToken.id; // Attach user ID to the request
-    next();
-  });
+  else{
+      res.status(401).json({ error: 'Unauthorized' });
+  }
 };
+
 
 // Middleware to check and attach the user to the request
 const checkUser = async (req, res, next) => {
@@ -33,7 +37,7 @@ const checkUser = async (req, res, next) => {
     return next();
   }
 
-  jwt.verify(token, JWT_SECRET, async (err, decodedToken) => {
+  jwt.verify(token, 'mynameisrifat', async (err, decodedToken) => {
     if (err) {
       console.error("JWT Verification Error:", err.message);
       req.user = null; // Invalid token, no user
@@ -41,7 +45,7 @@ const checkUser = async (req, res, next) => {
     }
 
     try {
-      const user = await User.findById(decodedToken.id); // Look up the user by ID
+      const user = await Users.findById(decodedToken.id); // Look up the user by ID
       if (user) {
         req.user = user; // Attach user to the request
       } else {

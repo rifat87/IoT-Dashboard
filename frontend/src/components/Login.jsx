@@ -16,7 +16,7 @@ const Login = () => {
       const response = await axios.post("http://localhost:5000/login", {
         email,
         password,
-      });
+      }, {withCredentials: true});
 
       // Check if login was successful
       if (response.status === 200) {
