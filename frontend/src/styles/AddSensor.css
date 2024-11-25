@@ -1,0 +1,48 @@
+.add-sensor-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    padding: 20px;
+  }
+  
+  .add-sensor-paper {
+    max-width: 500px;
+    width: 100%;
+    padding: 30px;
+    border-radius: 10px;
+    background-color: #ffffff;
+  }
+  
+  .add-sensor-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .add-sensor-input {
+    margin-bottom: 20px;
+  }
+  
+  .add-sensor-button {
+    margin-bottom: 15px;
+    background-color: #007bff;
+    color: #fff;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-sensor-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .go-to-dashboard-button {
+    color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .go-to-dashboard-button:hover {
+    background-color: #007bff;
+    color: #fff;
+  }
+  

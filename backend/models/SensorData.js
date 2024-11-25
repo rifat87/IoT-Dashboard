@@ -1,11 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
+// Base schema for sensor data
 const sensorDataSchema = new mongoose.Schema({
-  email: { type: String, required: true },
-  sensorName: { type: String, required: true },
+  timestamp: { type: Date, required: true, default: Date.now },
   value: { type: Number, required: true },
-  timestamp: { type: Date, default: Date.now },
 });
 
-const SensorData = mongoose.model('SensorData', sensorDataSchema);
-export default SensorData;
+export const createSensorDataSchema = (collectionName) => {
+  // Check if model already exists to avoid OverwriteModelError
+  if (mongoose.models[collectionName]) {
+    return mongoose.models[collectionName];
+  }
+
+  return mongoose.model(collectionName, sensorDataSchema, collectionName);
+};

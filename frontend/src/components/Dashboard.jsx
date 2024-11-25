@@ -1,16 +1,43 @@
-import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, Box, Container, Grid, Card, CardContent, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  Container,
+  Grid,
+  Card,
+  CardContent,
+  Button,
+  TextField,
+} from '@mui/material';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
   const [showApiKey, setShowApiKey] = useState(false);
   const [writeApiKey, setWriteApiKey] = useState('');
+  const [sensorName, setSensorName] = useState('');
+  const [sensorData, setSensorData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
+
+  // Fetch API Key
   const fetchApiKey = async () => {
     try {
       const response = await axios.get("http://localhost:5000/profile", {
-        withCredentials: true, // Ensure cookies are sent with the request
+        withCredentials: true,
       });
 
       setWriteApiKey(response.data.writeApiKey);
@@ -22,10 +49,38 @@ const Dashboard = () => {
 
   const handleShowApiKey = () => {
     if (!showApiKey) {
-      fetchApiKey(); // Fetch the API key only if it isn't being displayed already
+      fetchApiKey();
     }
-    setShowApiKey(!showApiKey); // Toggle the visibility of the API key
+    setShowApiKey(!showApiKey);
   };
+
+  // Fetch Sensor Data
+  const fetchSensorData = async (manualFetch = false) => {
+    if (manualFetch) setIsLoading(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/read", 
+        { sensorName }, 
+        { withCredentials: true }
+      );
+      setSensorData(response.data);
+      console.log('Sensor data fetched successfully:', response.data);
+    } catch (error) {
+      console.error(
+        'Error fetching sensor data:',
+        error.response?.data || error.message
+      );
+    }
+    if (manualFetch) setIsLoading(false);
+  };
+
+  // Polling for live updates every 10 seconds
+  useEffect(() => {
+    if (sensorName) {
+      const interval = setInterval(() => fetchSensorData(false), 10000);
+      return () => clearInterval(interval);
+    }
+  }, [sensorName]);
 
   return (
     <Box>
@@ -67,6 +122,16 @@ const Dashboard = () => {
           <Button fullWidth sx={{ marginBottom: 2 }} variant="outlined">
             Logs
           </Button>
+          {/* Navigate to Add Sensor */}
+          <Button
+            fullWidth
+            sx={{ marginBottom: 2 }}
+            variant="contained"
+            color="secondary"
+            onClick={() => navigate('/add-sensor')}
+          >
+            Add Sensor
+          </Button>
           {/* Show API Key Button */}
           <Button
             fullWidth
@@ -95,22 +160,53 @@ const Dashboard = () => {
             </Card>
           )}
 
-          {/* Placeholder for Sensor Chart */}
+          {/* Sensor Data Section */}
           <Box sx={{ marginBottom: 4 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6">Sensor Data (Live Chart)</Typography>
                 <Box
                   sx={{
-                    height: '300px',
-                    bgcolor: '#eaeaea',
-                    textAlign: 'center',
-                    lineHeight: '300px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginBottom: 2,
                   }}
-                  className="chart-placeholder"
                 >
-                  Chart Placeholder
+                  <TextField
+                    label="Sensor Name"
+                    variant="outlined"
+                    value={sensorName}
+                    onChange={(e) => setSensorName(e.target.value)}
+                    sx={{ marginRight: 2 }}
+                  />
+                  <Button
+                    variant="contained"
+                    onClick={() => fetchSensorData(true)}
+                    disabled={!sensorName || isLoading}
+                  >
+                    {isLoading ? 'Loading...' : 'Fetch Data'}
+                  </Button>
                 </Box>
+                {sensorData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={400}>
+                    <LineChart data={sensorData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis
+                        dataKey="timestamp"
+                        tickFormatter={(tick) =>
+                          new Date(tick).toLocaleTimeString()
+                        }
+                      />
+                      <YAxis />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="value" stroke="#8884d8" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No data available. Enter a valid sensor name and fetch data.
+                  </Typography>
+                )}
               </CardContent>
             </Card>
           </Box>

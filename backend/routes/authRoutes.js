@@ -1,7 +1,7 @@
 import { Router } from "express";
 import controller from "../controllers/authController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
-import { getSensorData } from "../controllers/sensorController.js";
+import sensorController from "../controllers/sensorController.js";
 
 const { requireAuth, checkUser } = authMiddleware;
 
@@ -12,7 +12,10 @@ router.post("/register", controller.registerUser); // User registration
 router.post("/login", controller.loginUser); // User login
 router.get("/logout", controller.logoutUser); // User logout
 router.get('/profile', controller.getApiKey);
-router.get("/data", getSensorData);
+router.post("/add-sensor", sensorController.addSensor);
+// Route for storing sensor data
+router.post("/sensor-data", sensorController.storeSensorData);
+router.post("/read", sensorController.readSensorData);
 
 // Example protected routes
 router.get("/profile", requireAuth, (req, res) => {
