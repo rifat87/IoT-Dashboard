@@ -33,10 +33,17 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
 
+ // Determine the base URL dynamically
+  const baseURL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:5000' 
+  : `http://${window.location.hostname}:5000`; // Use local IP if not localhost
+
+
+
   // Fetch API Key
   const fetchApiKey = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/profile", {
+      const response = await axios.get(`${baseURL}/profile`, {
         withCredentials: true,
       });
 
@@ -59,7 +66,7 @@ const Dashboard = () => {
     if (manualFetch) setIsLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:5000/read", 
+        `${baseURL}/read`, 
         { sensorName }, 
         { withCredentials: true }
       );

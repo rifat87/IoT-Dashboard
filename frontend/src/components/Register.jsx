@@ -19,13 +19,20 @@ const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+   // Determine the base URL dynamically
+   const baseURL = window.location.hostname === 'localhost' 
+   ? 'http://localhost:5000' 
+   : `http://${window.location.hostname}:5000`; // Use local IP if not localhost
+
+
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/register", // Update the API URL to match your backend route
+        `${baseURL}/register`, // Update the API URL to match your backend route
         formData
       );
 

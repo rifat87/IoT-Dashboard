@@ -1,6 +1,7 @@
 import { Users } from "../models/User.js";
 import generateToken from "../utils/token.js";
 import jwt from 'jsonwebtoken';
+import localIP from '../config/ipConfig.js';
 
 
 const maxAge = 3*24*60*60;
@@ -29,7 +30,7 @@ const registerUser = async (req, res) => {
     await users.save();
     console.log("The data is stored");
     const token = createToken(users.email);
-    res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+    res.header('Access-Control-Allow-Origin', `http://${localIP}:5173`);
     res.cookie('jwt', token, { httpOnly: false, maxAge: maxAge * 1000 });
     if (users) {
       console.log("Unable to create the user");

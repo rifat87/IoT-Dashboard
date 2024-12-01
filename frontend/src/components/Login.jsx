@@ -9,11 +9,17 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
+  // Determine the base URL dynamically
+  const baseURL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000' 
+    : `http://${window.location.hostname}:5000`; // Use local IP if not localhost
+
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       // Make API call to /login
-      const response = await axios.post("http://localhost:5000/login", {
+      const response = await axios.post(`${baseURL}/login`, {
         email,
         password,
       }, {withCredentials: true});

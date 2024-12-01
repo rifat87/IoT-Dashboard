@@ -16,6 +16,13 @@ const AddSensor = () => {
     return null;
   };
 
+   // Determine the base URL dynamically
+   const baseURL = window.location.hostname === 'localhost' 
+   ? 'http://localhost:5000' 
+   : `http://${window.location.hostname}:5000`; // Use local IP if not localhost
+
+
+
   const handleAddSensor = async () => {
     try {
     //   const token = getCookie('jwt'); // Get the token from cookies using the correct cookie name 'jwt'
@@ -25,7 +32,7 @@ const AddSensor = () => {
     //   }
 
       const response = await axios.post(
-        'http://localhost:5000/add-sensor', // Adjust URL if needed
+       `${baseURL}/add-sensor`, // Adjust URL if needed
         { sensorName }, {
             withCredentials: true, // Ensure cookies are sent with the request
           }
