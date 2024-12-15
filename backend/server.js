@@ -29,9 +29,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/', (req, res) => {
-    res.send('Hello World!'); // This can be any response you want
-});
+// app.get('/', (req, res) => {
+//     res.send('Hello World!'); // This can be any response you want
+// });
 
 app.use(express.json());
 app.use(cookieParser());

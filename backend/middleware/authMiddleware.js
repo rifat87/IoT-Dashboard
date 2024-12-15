@@ -30,35 +30,65 @@ const requireAuth = async (req, res, next) => {
 
 // Middleware to check and attach the user to the request
 const checkUser = async (req, res, next) => {
-  const token = req.cookies?.jwt; // Retrieve token from cookies
 
-  if (!token) {
-    req.user = null; // No token, no user
-    return next();
-  }
-
-  jwt.verify(token, 'mynameisrifat', async (err, decodedToken) => {
-    if (err) {
-      console.error("JWT Verification Error:", err.message);
-      req.user = null; // Invalid token, no user
-      return next();
+  const token = req.cookies.jwt;
+  
+    if (token) {
+      jwt.verify(token, 'mynameisrifat', async (err, decodedToken) => {
+        if (err) {
+          console.error(err);
+          res.status(401).json({ error: 'Unauthorized' });
+        } else {
+          console.log("checkuser emailL: ", decodedToken.id);
+          const userEmail = decodedToken.id;
+          try {
+            const user = await Users.findOne({ email: userEmail }); 
+            if (user) {
+              req.user = user; // Attach the user object to the request for further processing
+              next(); // Proceed to the next middleware or route handler
+            } else {
+              res.status(404).json({ error: 'User not found' });
+            }
+          } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error From CheckUser' });
+          }
+        }
+      });
+    } else {
+      res.status(401).json({ error: 'Unauthorized from CheckUser' });
     }
 
-    try {
-      const user = await Users.findById(decodedToken.id); // Look up the user by ID
-      if (user) {
-        req.user = user; // Attach user to the request
-      } else {
-        console.warn("User not found for ID:", decodedToken.id);
-        req.user = null; // User not found
-      }
-    } catch (error) {
-      console.error("Database Error:", error.message);
-      req.user = null; // In case of DB error, no user
-    }
 
-    next(); // Proceed to the next middleware
-  });
+  // const checkUser = async (req, res, next) => {
+  //   const token = req.cookies.jwt;
+  
+  //   if (token) {
+  //     jwt.verify(token, 'labassist group_1 secret', async (err, decodedToken) => {
+  //       if (err) {
+  //         console.error(err);
+  //         res.status(401).json({ error: 'Unauthorized' });
+  //       } else {
+  //         const userId = decodedToken.id;
+  //         try {
+  //           const user = await User.findOne({ id: userId });
+  //           if (user) {
+  //             req.user = user; // Attach the user object to the request for further processing
+  //             next(); // Proceed to the next middleware or route handler
+  //           } else {
+  //             res.status(404).json({ error: 'User not found' });
+  //           }
+  //         } catch (error) {
+  //           console.error(error);
+  //           res.status(500).json({ error: 'Internal Server Error' });
+  //         }
+  //       }
+  //     });
+  //   } else {
+  //     res.status(401).json({ error: 'Unauthorized' });
+  //   }
+  // };
+
 };
 
 export default { requireAuth, checkUser };

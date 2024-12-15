@@ -16,10 +16,12 @@ router.post("/add-sensor", sensorController.addSensor);
 // Route for storing sensor data
 router.post("/sensor-data", sensorController.storeSensorData);
 router.post("/read", sensorController.readSensorData);
+router.get('/logout', requireAuth, controller.logoutUser);
+router.get('/dashboard', requireAuth, controller.getDashboard);
 
 // Example protected routes
-router.get("/profile", requireAuth, (req, res) => {
-  res.json({ message: "This is a protected profile route." });
-});
+// router.get("/profile", requireAuth, (req, res) => {
+//   res.json({ message: "This is a protected profile route." });
+// });
 
 export default router;

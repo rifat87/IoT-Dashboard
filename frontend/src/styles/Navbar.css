@@ -1,57 +1,80 @@
+/* Navbar Container */
 .navbar {
-    background-color: #333;
-    color: white;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #1a202c;
+  color: #fff;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Navbar Brand */
+.navbar-brand a {
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  transition: color 0.3s ease-in-out;
+}
+
+.navbar-brand a:hover {
+  color: #63b3ed;
+}
+
+/* Navbar Links */
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links li {
+  display: inline;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 1rem;
+  transition: color 0.3s ease-in-out;
+}
+
+.navbar-links a:hover {
+  color: #63b3ed;
+}
+
+/* Logout Button */
+.navbar-button.logout-button {
+  background-color: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.navbar-button.logout-button:hover {
+  background-color: #63b3ed;
+  color: #1a202c;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 1rem;
   }
-  
-  .navbar-brand a {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: white;
-    text-decoration: none;
-  }
-  
+
   .navbar-links {
-    display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
   }
-  
-  .navbar-links li {
-    list-style: none;
-  }
-  
-  .navbar-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  .navbar-links a:hover {
-    background-color: #0056b3;
-    color: #fff;
-    border-radius: 5px;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .navbar-links {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-  
-    .navbar-links a {
-      padding: 0.5rem;
-      width: 100%;
-      text-align: left;
-    }
-  }
-  
+}

@@ -1,5 +1,4 @@
 import { Users } from "../models/User.js";
-import generateToken from "../utils/token.js";
 import jwt from 'jsonwebtoken';
 import localIP from '../config/ipConfig.js';
 
@@ -84,34 +83,88 @@ const loginUser = async (req, res) => {
 };
 
 
+// const getApiKey = async (req, res) => {
+//   try {
+//     // The user is already attached to the request object by the requireAuth middleware
+//     const token = req.cookies.jwt;
+//     console.log("The error is token: ", token);
+//     if(!token){
+//       console.log("Found error");
+//       throw new Error('JWT token is missing');
+//     }
+//     // Decoded Token: { id: 're@gmail.com', iat: 1732385130, exp: 1732644330 }
+//     const decodedToken = jwt.decode(token);
+//     const userEmail = decodedToken.id;
+//     console.log("the token email id: ", userEmail);
+
+//     const user = await Users.findOne({ email: userEmail }); 
+//     console.log("The user data from email: ", user);
+//     // If the user is found, send the writeApiKey
+//     console.log("The writeApiKey is: ", user.writeApiKey);
+//     if (user) {
+//       console.log("Hello AOI KEy");
+//       res.status(200).json({ writeApiKey: user.writeApiKey });
+//       console.log("Token data to email is found")
+//     } else {
+//       res.status(404).json({ message: "User not found" });
+//     }
+//   } catch (error) {
+//     console.error("Error fetching user profile:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
 const getApiKey = async (req, res) => {
   try {
-    // The user is already attached to the request object by the requireAuth middleware
     const token = req.cookies.jwt;
     console.log("The error is token: ", token);
-    if(!token){
-      console.log("Found error");
-      throw new Error('JWT token is missing');
+
+    // Check if the token is missing
+    if (!token) {
+      console.log("Found error: JWT token is missing");
+      return res.status(401).json({ message: 'JWT token is missing' }); // Send 401 Unauthorized
     }
-    // Decoded Token: { id: 're@gmail.com', iat: 1732385130, exp: 1732644330 }
+
+    // Decode the JWT token
     const decodedToken = jwt.decode(token);
     const userEmail = decodedToken.id;
-    console.log("the token email id: ", userEmail);
+    console.log("The token email id: ", userEmail);
 
-    const user = await Users.findOne({ email: userEmail });; 
+    // Find user by email
+    const user = await Users.findOne({ email: userEmail });
+    
+    // Log the user data for debugging
     console.log("The user data from email: ", user);
-    // If the user is found, send the writeApiKey
+
+    // Check if the user exists
     if (user) {
-      res.status(200).json({ writeApiKey: user.writeApiKey });
-      console.log("Token data to email is found")
+      console.log("Hello API Key");
+      console.log("The writeApiKey is: ", user.writeApiKey);
+      console.log("Sending API key response...");
+      return res.status(200).json({ writeApiKey: user.writeApiKey }); // Send 200 OK with API key
     } else {
-      res.status(404).json({ message: "User not found" });
+      console.log("User not found");
+      return res.status(404).json({ message: "User not found" }); // Send 404 Not Found
     }
   } catch (error) {
     console.error("Error fetching user profile:", error);
-    res.status(500).json({ message: "Internal server error" });
+    
+    // Only respond if headers have not been sent
+    if (!res.headersSent) {
+      return res.status(500).json({ message: "Internal server error" }); // Send 500 Internal Server Error
+    }
   }
 };
+
+
+export const getDashboard = (req, res) => {
+  if (req.user) {
+      return res.status(200).json({ message: 'User is authenticated', user: req.user });
+  } else {
+      return res.status(401).json({ message: 'Unauthorized: Please log in' });
+  }
+};
+
 
 const logoutUser = (req, res) => {
   res.cookie("jwt", "", { maxAge: 1 });
@@ -124,6 +177,7 @@ const controller = {
   loginUser,
   logoutUser,
   getApiKey,
+  getDashboard,
 };
 
 export default controller;
