@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ darkMode, onDarkModeToggle }) => {
+  console.log("Navbar received darkMode:", darkMode);
   const navigate = useNavigate();
 
   // Determine the base URL dynamically
@@ -63,6 +64,11 @@ const Navbar = () => {
         </li>
         <li>
           <Link to="/register">Register</Link>
+        </li>
+        <li>
+          <button onClick={onDarkModeToggle} className="navbar-button dark-mode-button">
+            {darkMode ? 'Light Mode' : 'Dark Mode'}
+          </button>
         </li>
       </ul>
     </nav>

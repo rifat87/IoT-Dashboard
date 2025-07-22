@@ -1,0 +1,24 @@
+/* Light Mode Variables
+:root {
+    --background-color: #ffffff;
+    --text-color: #000000;
+    --sidebar-bg-color: #f4f4f4;
+    --header-bg-color: #ececec;
+    --active-tab-color: #dcdcdc;
+    --hover-tab-color: #eaeaea;
+    --active-text-color: #000000;
+    --hover-text-color: #555555;
+  }
+  
+
+  body.dark-mode {
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --sidebar-bg-color: #333333;
+    --header-bg-color: #1f1f1f;
+    --active-tab-color: #444444;
+    --hover-tab-color: #555555;
+    --active-text-color: #ffffff;
+    --hover-text-color: #aaaaaa;
+  }
+   */

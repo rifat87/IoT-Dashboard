@@ -1,0 +1,45 @@
+.control-device {
+  text-align: center;
+  padding: 2rem;
+  background-color: #f3f3f3;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.control-device h2 {
+  margin-bottom: 1rem;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.on-btn, .off-btn {
+  padding: 0.8rem 1.5rem;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.on-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.off-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.on-btn:hover {
+  background-color: #218838;
+}
+
+.off-btn:hover {
+  background-color: #c82333;
+}

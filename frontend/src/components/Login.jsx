@@ -27,7 +27,7 @@ const Login = () => {
       // Check if login was successful
       if (response.status === 200) {
         alert("Login successful");
-        navigate("/dashboard"); // Redirect to Dashboard
+        navigate("/userProfile"); // Redirect to Dashboard
       }
     } catch (error) {
       // Show error message for login failure

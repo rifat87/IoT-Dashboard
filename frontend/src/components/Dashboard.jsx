@@ -33,12 +33,10 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
 
- // Determine the base URL dynamically
-  const baseURL = window.location.hostname === 'localhost' 
-  ? 'http://localhost:5000' 
-  : `http://${window.location.hostname}:5000`; // Use local IP if not localhost
-
-
+  // Determine the base URL dynamically
+  const baseURL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000'
+    : `http://${window.location.hostname}:5000`; // Use local IP if not localhost
 
   // Fetch API Key
   const fetchApiKey = async () => {
@@ -66,8 +64,8 @@ const Dashboard = () => {
     if (manualFetch) setIsLoading(true);
     try {
       const response = await axios.post(
-        `${baseURL}/read`, 
-        { sensorName }, 
+        `${baseURL}/read`,
+        { sensorName },
         { withCredentials: true }
       );
       setSensorData(response.data);
@@ -88,6 +86,38 @@ const Dashboard = () => {
       return () => clearInterval(interval);
     }
   }, [sensorName]);
+
+  // Calculate Mean, Mode, and Median
+  const calculateStats = (data) => {
+    if (!data || data.length === 0) return { mean: 0, mode: 0, median: 0 };
+
+    // Calculate Mean
+    const mean = data.reduce((acc, curr) => acc + curr.value, 0) / data.length;
+
+    // Calculate Mode
+    const frequency = {};
+    let mode = null;
+    let maxFreq = 0;
+    data.forEach((item) => {
+      frequency[item.value] = (frequency[item.value] || 0) + 1;
+      if (frequency[item.value] > maxFreq) {
+        maxFreq = frequency[item.value];
+        mode = item.value;
+      }
+    });
+
+    // Calculate Median
+    const sortedData = [...data].sort((a, b) => a.value - b.value);
+    const mid = Math.floor(sortedData.length / 2);
+    const median =
+      sortedData.length % 2 !== 0
+        ? sortedData[mid].value
+        : (sortedData[mid - 1].value + sortedData[mid].value) / 2;
+
+    return { mean, mode, median };
+  };
+
+  const { mean, mode, median } = calculateStats(sensorData);
 
   return (
     <Box>
@@ -139,6 +169,18 @@ const Dashboard = () => {
           >
             Add Sensor
           </Button>
+          
+          {/* Device Control Panel */}
+          <Button
+            fullWidth
+            sx={{ marginBottom: 2 }}
+            variant="contained"
+            color="success"
+            onClick={() => navigate('/control-device')}
+          >
+            Device Control Panel
+          </Button>
+
           {/* Show API Key Button */}
           <Button
             fullWidth
@@ -218,31 +260,17 @@ const Dashboard = () => {
             </Card>
           </Box>
 
-          {/* Placeholder for Sensor Summary */}
-          <Grid container spacing={4}>
-            <Grid item xs={12} sm={6} md={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6">Sensor 1</Typography>
-                  <Typography variant="body1">Value: 25°C</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Status: Active
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6">Sensor 2</Typography>
-                  <Typography variant="body1">Value: 60%</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Status: Active
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
+          {/* Sensor Stats Section */}
+          <Box sx={{ marginBottom: 4 }}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">Sensor Stats</Typography>
+                <Typography variant="body1">Mean: {mean}</Typography>
+                <Typography variant="body1">Mode: {mode}</Typography>
+                <Typography variant="body1">Median: {median}</Typography>
+              </CardContent>
+            </Card>
+          </Box>
         </Container>
       </Box>
     </Box>

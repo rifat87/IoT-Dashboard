@@ -1,0 +1,79 @@
+/* Existing Styles */
+.profile-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .profile-layout {
+    display: flex;
+    flex: 1;
+  }
+  
+  .content-area {
+    flex: 1;
+    padding: 20px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Updated and New Styles */
+  body.dark-mode {
+    --background-color: #1e1e2d;
+    --text-color: #f1f1f1;
+  }
+  
+  body.light-mode {
+    --background-color: #f9f9f9;
+    --text-color: #333;
+  }
+  
+  .profile-page.light {
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  
+  .profile-page.dark {
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  
+  .content-area h1,
+  .content-area p {
+    margin: 10px 0;
+  }
+  
+  /* Add smooth transition for mode changes */
+  .profile-page,
+  .content-area {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* User Info Styles */
+  .user-greeting {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .user-project {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+  
+  .user-info {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+  

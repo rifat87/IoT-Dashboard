@@ -1,45 +1,60 @@
-// server.js
+// backend/server.js
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
-import router from './routes/authRoutes.js';
-import authMiddleware from './middleware/authMiddleware.js';
-import localIP from './config/ipConfig.js'; // Import the local IP address
+import router from "./routes/authRoutes.js";
+import authMiddleware from "./middleware/authMiddleware.js";
+import localIP from "./config/ipConfig.js";
 
-const { requireAuth, checkUser } = authMiddleware;
+import http from "http"; // Native server
+import { Server } from "socket.io";
+import socketHandler from "./routes/socketRoutes.js"; // For frontend socket
+import startEspSocketServer from "./ws/espSocketServer.js"; // For ESP32 native WS
+
+
 
 dotenv.config();
 connectDB();
 
 const app = express();
-
-// Set up CORS using the imported local IP
-app.use(cors({
-    origin: `http://${localIP}:5173`, // Use the imported local IP for CORS
-    credentials: true
-}));
-
-app.options('*', cors());
-
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', `http://${localIP}:5173`); // Use the imported local IP for headers
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
+const server = http.createServer(app); // Use raw HTTP server
+const io = new Server(server, {
+  cors: {
+    origin: `http://${localIP}:5173`,
+    credentials: true,
+  },
 });
 
-// app.get('/', (req, res) => {
-//     res.send('Hello World!'); // This can be any response you want
-// });
+// Middleware
+app.use(cors({
+  origin: `http://${localIP}:5173`,
+  credentials: true,
+}));
+app.options('*', cors());
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', `http://${localIP}:5173`);
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
 app.use(express.json());
 app.use(cookieParser());
-// Check for all requests
+
+// JWT check
+const { checkUser } = authMiddleware;
 app.get('*', checkUser);
 
+// Routes
 app.use(router);
 
-const PORT = 5000;
+// Start WebSocket handlers
+socketHandler(io);              // React/Flutter clients
+startEspSocketServer();  // ESP32 native clients
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Server listen
+const PORT = 5000;
+server.listen(PORT, () => {
+  console.log(`🚀 Server running at http://${localIP}:${PORT}`);
+});
