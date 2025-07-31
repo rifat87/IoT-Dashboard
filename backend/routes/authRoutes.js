@@ -11,13 +11,15 @@ const router = Router();
 router.post("/register", controller.registerUser); // User registration
 router.post("/login", controller.loginUser); // User login
 router.get("/logout", controller.logoutUser); // User logout
-router.get('/profile', controller.getApiKey);
+router.get("/profile", controller.getApiKey);
 router.post("/add-sensor", sensorController.addSensor);
 // Route for storing sensor data
 router.post("/sensor-data", sensorController.storeSensorData);
 router.post("/read", sensorController.readSensorData);
 router.get('/logout', requireAuth, controller.logoutUser);
 router.get('/dashboard', requireAuth, controller.getDashboard);
+// router.get("/ping", controller.getPing);
+
 
 // Example protected routes
 // router.get("/profile", requireAuth, (req, res) => {

@@ -171,6 +171,11 @@ const logoutUser = (req, res) => {
   res.status(200).json({ message: "Logout successful" });
 };
 
+// const getPing = (req, res) => {
+//   res.status(200).send("pong");
+//   res.status(200).json({ message: "pong", time: new Date() });
+//   console.log("Ping is sent");
+// }
 // Export all functions in one object
 const controller = {
   registerUser,

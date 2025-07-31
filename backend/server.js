@@ -42,6 +42,11 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(cookieParser());
 
+app.get('/ping', (req, res) => {
+  res.status(200).send('pong');
+  console.log("Ping is sent");
+});
+
 // JWT check
 const { checkUser } = authMiddleware;
 app.get('*', checkUser);
